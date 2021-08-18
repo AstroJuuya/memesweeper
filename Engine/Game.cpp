@@ -24,8 +24,24 @@
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	mf( nMemes ),
+	rng( std::random_device()() )
 {
+	std::uniform_int_distribution<int> gridPos ( 0, 20 );
+
+	mf.Reveal( Vei2(0, 0) );
+
+	for ( int rev = 100; rev > 0; )
+	{
+		const Vei2 tile = Vei2(gridPos(rng), gridPos(rng));
+		if ( mf.GetTile( tile ) != MemeField::Tile::Revealed )
+		{
+			mf.Reveal( tile );
+			rev--;
+		}
+	}
+
 }
 
 void Game::Go()
@@ -42,4 +58,5 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
+	mf.Draw( gfx );
 }

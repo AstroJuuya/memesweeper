@@ -24,6 +24,10 @@
 #include "Mouse.h"
 #include "Graphics.h"
 
+#include "MemeField.h"
+
+#include <random>
+
 class Game
 {
 public:
@@ -42,5 +46,9 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+	std::mt19937 rng;
+	MemeField mf;
+	static constexpr int nMemes = 20;
+
 	/********************************/
 };

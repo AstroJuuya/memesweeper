@@ -42,7 +42,7 @@ void MemeField::Draw( Graphics& gfx )
 			SpriteCodex::DrawTileFlag(offset + ToVei2(i) * SpriteCodex::tileSize, gfx);
 			break;
 		case Tile::Revealed:
-			SpriteCodex::DrawTileCross(offset + ToVei2(i) * SpriteCodex::tileSize, gfx);
+			SpriteCodex::DrawTile0(offset + ToVei2(i) * SpriteCodex::tileSize, gfx);
 			break;
 		case Tile::Meme:
 			SpriteCodex::DrawTileMeme(offset + ToVei2(i) * SpriteCodex::tileSize, gfx);
@@ -54,11 +54,20 @@ void MemeField::Draw( Graphics& gfx )
 
 void MemeField::Reveal( const Vei2& gridPos )
 {
+	const int index = ToIndex( gridPos );
+	if ( GetTile( gridPos ) == Tile::Hidden )
+	{
+		board[ index ] = Tile::Revealed;
+	}
+	else if ( GetTile( gridPos ) == Tile::Meme )
+	{
+		board [ index ] = Tile::Flag;
+	}
 }
 
 const MemeField::Tile& MemeField::GetTile( const Vei2& gridPos ) const
 {
-	return board[ gridPos.y * width + gridPos.x ];
+	return board[ ToIndex( gridPos ) ];
 }
 
 MemeField::Tile& MemeField::SetTile( const Vei2& gridPos )
@@ -69,4 +78,9 @@ MemeField::Tile& MemeField::SetTile( const Vei2& gridPos )
 const Vei2& MemeField::ToVei2(const int index) const
 {
 	return Vei2( index % width ,index / width );
+}
+
+const int MemeField::ToIndex(const Vei2& gridPos) const
+{
+	return gridPos.y * width + gridPos.x;
 }
