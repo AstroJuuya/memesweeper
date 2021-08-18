@@ -142,6 +142,7 @@
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="MemeField.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="RectI.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="MemeField.cpp" />
     <ClCompile Include="SpriteCodex.cpp" />
     <ClCompile Include="Vei2.cpp" />
   </ItemGroup>
