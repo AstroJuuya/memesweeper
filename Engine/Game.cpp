@@ -30,14 +30,12 @@ Game::Game( MainWindow& wnd )
 {
 	std::uniform_int_distribution<int> gridPos ( 0, 20 );
 
-	mf.Reveal( Vei2(0, 0) );
-
 	for ( int rev = 100; rev > 0; )
 	{
 		const Vei2 tile = Vei2(gridPos(rng), gridPos(rng));
-		if ( mf.GetTile( tile ) != MemeField::Tile::Revealed )
+		if ( mf.GetTile( tile ).GetState() != MemeField::Tile::State::Revealed )
 		{
-			mf.Reveal( tile );
+			mf.GetTile( tile ).Reveal();
 			rev--;
 		}
 	}

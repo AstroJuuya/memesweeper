@@ -6,20 +6,67 @@ MemeField::MemeField( int nMemes )
 	:
 	rng( std::random_device()() )
 {
-	std::uniform_int_distribution<int>newMemeX (0, width);
-	std::uniform_int_distribution<int>newMemeY (0, height);
+	std::uniform_int_distribution<int>newMemeX (0, width - 1);
+	std::uniform_int_distribution<int>newMemeY (0, height - 1);
 
 	for ( int i = 0; i < nMemes; i++ )
 	{
 		Vei2 newMeme( newMemeX(rng), newMemeY(rng) );
-		while ( GetTile( newMeme ) == Tile::Meme )
+		while ( GetTile( newMeme ).HasMeme() == true )
 		{
 			newMeme = Vei2(newMemeX(rng), newMemeY(rng));
 		}
-		assert( GetTile( newMeme ) != Tile::Meme );
-		SetTile( newMeme ) = Tile::Meme;
+		assert( GetTile( newMeme ).HasMeme() == false );
+		GetTile( newMeme ).NewMeme();
 	}
 }
+
+void MemeField::Tile::Draw( const MemeField& field, const int index, Graphics& gfx)
+{
+	switch (state)
+	{
+	case State::Hidden:
+		SpriteCodex::DrawTileButton( field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx );
+		break;
+	case State::Flag:
+		SpriteCodex::DrawTileFlag( field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx );
+		break;
+	case State::Revealed:
+		SpriteCodex::DrawTile0( field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx );
+		break;
+	case State::Meme:
+		SpriteCodex::DrawTileMeme( field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx );
+		break;
+	}
+}
+
+MemeField::Tile::State MemeField::Tile::GetState() const
+{
+	return state;
+}
+
+void MemeField::Tile::NewMeme()
+{
+	hasMeme = true;
+}
+
+bool MemeField::Tile::HasMeme() const
+{
+	return hasMeme;
+}
+
+void MemeField::Tile::Reveal()
+{
+	if (hasMeme)
+	{
+		state = State::Meme;
+	}
+	else
+	{
+		state = State::Revealed;
+	}
+}
+
 
 void MemeField::Draw( Graphics& gfx )
 {
@@ -33,49 +80,16 @@ void MemeField::Draw( Graphics& gfx )
 
 	for ( int i = 0; i < width * height; i++ )
 	{
-		switch ( board[i] )
-		{
-		case Tile::Hidden:
-			SpriteCodex::DrawTileButton( offset + ToVei2( i ) * SpriteCodex::tileSize, gfx );
-			break;
-		case Tile::Flag:
-			SpriteCodex::DrawTileFlag(offset + ToVei2(i) * SpriteCodex::tileSize, gfx);
-			break;
-		case Tile::Revealed:
-			SpriteCodex::DrawTile0(offset + ToVei2(i) * SpriteCodex::tileSize, gfx);
-			break;
-		case Tile::Meme:
-			SpriteCodex::DrawTileMeme(offset + ToVei2(i) * SpriteCodex::tileSize, gfx);
-			break;
-		}
-		
+		board[i].Draw( *this , i, gfx );
 	}
 }
 
-void MemeField::Reveal( const Vei2& gridPos )
-{
-	const int index = ToIndex( gridPos );
-	if ( GetTile( gridPos ) == Tile::Hidden )
-	{
-		board[ index ] = Tile::Revealed;
-	}
-	else if ( GetTile( gridPos ) == Tile::Meme )
-	{
-		board [ index ] = Tile::Flag;
-	}
-}
-
-const MemeField::Tile& MemeField::GetTile( const Vei2& gridPos ) const
+MemeField::Tile& MemeField::GetTile( const Vei2& gridPos )
 {
 	return board[ ToIndex( gridPos ) ];
 }
 
-MemeField::Tile& MemeField::SetTile( const Vei2& gridPos )
-{
-	return board[gridPos.y * width + gridPos.x];
-}
-
-const Vei2& MemeField::ToVei2(const int index) const
+Vei2& MemeField::ToVei2(const int index) const
 {
 	return Vei2( index % width ,index / width );
 }
