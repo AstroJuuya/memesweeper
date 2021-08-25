@@ -29,6 +29,7 @@ void MemeField::Tile::Draw( const MemeField& field, const int index, Graphics& g
 		SpriteCodex::DrawTileButton( field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx );
 		break;
 	case State::Flag:
+		SpriteCodex::DrawTileButton( field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx );
 		SpriteCodex::DrawTileFlag( field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx );
 		break;
 	case State::Revealed:
@@ -43,6 +44,19 @@ void MemeField::Tile::Draw( const MemeField& field, const int index, Graphics& g
 MemeField::Tile::State MemeField::Tile::GetState() const
 {
 	return state;
+}
+
+void MemeField::Tile::ToggleFlag()
+{
+	assert( state != State::Revealed && state != State::Meme );
+	if ( state == State::Hidden )
+	{
+		state = State::Flag;
+	}
+	else if ( state == State::Flag )
+	{
+		state = State::Hidden;
+	}
 }
 
 void MemeField::Tile::NewMeme()
@@ -87,6 +101,20 @@ void MemeField::Draw( Graphics& gfx )
 MemeField::Tile& MemeField::GetTile( const Vei2& gridPos )
 {
 	return board[ ToIndex( gridPos ) ];
+}
+
+const bool MemeField::IsOnBoard(const Vei2& screenPos) const
+{
+	return RectI(screenPos, screenPos).IsOverlappingWith(rect);
+}
+
+MemeField::Tile& MemeField::TileAt(const Vei2& screenPos)
+{
+	if ( IsOnBoard( screenPos ) )
+	{
+		const Vei2 relPos = screenPos - offset;
+		return GetTile( relPos / SpriteCodex::tileSize );
+	}
 }
 
 Vei2& MemeField::ToVei2(const int index) const

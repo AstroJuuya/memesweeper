@@ -24,6 +24,7 @@ public:
 		void Draw(const MemeField& field, const int index, Graphics& gfx);
 		void NewMeme();
 		State GetState() const;
+		void ToggleFlag();
 		bool HasMeme() const;
 		void Reveal();
 
@@ -39,12 +40,23 @@ public:
 	Vei2& ToVei2(const int index) const;
 	const int ToIndex(const Vei2& gridPos) const;
 	Tile& GetTile(const Vei2& gridPos);
+	const bool IsOnBoard( const Vei2& screenPos ) const;
+	Tile& TileAt(const Vei2& screenPos);
 
 // Variables
 public:
+	// Centers the board in the middle
 	const Vei2 offset = {
 		Graphics::ScreenWidth / 2 - SpriteCodex::tileSize * width / 2,
 		Graphics::ScreenHeight / 2 - SpriteCodex::tileSize * height / 2
+	};
+	// The board's rectangle occupying screen space
+	const RectI rect = {
+		offset, 
+		Vei2(
+			offset.x + SpriteCodex::tileSize * width, 
+			offset.y + SpriteCodex::tileSize * height 
+			)
 	};
 
 private:
