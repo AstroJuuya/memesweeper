@@ -49,6 +49,6 @@ private:
 	std::mt19937 rng;
 	MemeField mf;
 	static constexpr int nMemes = 20;
-
+	bool mouseCooldown = false;
 	/********************************/
 };

@@ -28,9 +28,10 @@ Game::Game( MainWindow& wnd )
 	mf( nMemes ),
 	rng( std::random_device()() )
 {
+	/*
+	// Reveals 100 random tiles for testing purposes
 	std::uniform_int_distribution<int> gridPos ( 0, 20 );
-
-	for ( int rev = 100; rev > 0; )
+		for ( int rev = 100; rev > 0; )
 	{
 		const Vei2 tile = Vei2(gridPos(rng), gridPos(rng));
 		if ( mf.GetTile( tile ).GetState() != MemeField::Tile::State::Revealed )
@@ -39,7 +40,7 @@ Game::Game( MainWindow& wnd )
 			rev--;
 		}
 	}
-
+	*/
 }
 
 void Game::Go()
@@ -52,6 +53,38 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	// TODO: Implement mouse button hovering function / mousepress indecidedness
+	if ( wnd.mouse.LeftIsPressed() && !mouseCooldown )
+	{
+		const Vei2 mousePos = Vei2( wnd.mouse.GetPosX(), wnd.mouse.GetPosY() );
+		if ( mf.IsOnBoard( mousePos ) )
+		{
+			if ( mf.TileAt( mousePos ).GetState() != MemeField::Tile::State::Flag )
+			{
+				mf.TileAt( mousePos ).Reveal();
+			}
+		}
+		mouseCooldown = true;
+	}
+	else if ( wnd.mouse.RightIsPressed() && !mouseCooldown )
+	{
+		const Vei2 mousePos = Vei2(wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+		if ( mf.IsOnBoard( mousePos ) )
+		{
+			if ( 
+				mf.TileAt( mousePos ).GetState()== MemeField::Tile::State::Hidden || 
+				mf.TileAt( mousePos ).GetState()== MemeField::Tile::State::Flag 
+				)
+			{
+				mf.TileAt( mousePos ).ToggleFlag();
+			}
+		}
+		mouseCooldown = true;
+	}
+	else if ( !wnd.mouse.LeftIsPressed() && !wnd.mouse.RightIsPressed() && mouseCooldown )
+	{
+		mouseCooldown = false;
+	}
 }
 
 void Game::ComposeFrame()
