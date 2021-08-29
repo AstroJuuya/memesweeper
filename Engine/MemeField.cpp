@@ -17,7 +17,7 @@ MemeField::MemeField( int nMemes )
 			newMeme = Vei2(newMemeX(rng), newMemeY(rng));
 		}
 		assert( GetTile( newMeme ).HasMeme() == false );
-		GetTile( newMeme ).NewMeme();
+		SpawnMeme( newMeme );
 	}
 }
 
@@ -33,7 +33,36 @@ void MemeField::Tile::Draw( const MemeField& field, const int index, Graphics& g
 		SpriteCodex::DrawTileFlag( field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx );
 		break;
 	case State::Revealed:
-		SpriteCodex::DrawTile0( field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx );
+		switch (proximity)
+		{
+		case 0:
+			SpriteCodex::DrawTile0(field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx);
+			break;
+		case 1:
+			SpriteCodex::DrawTile1(field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx);
+			break;
+		case 2:
+			SpriteCodex::DrawTile2(field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx);
+			break;
+		case 3:
+			SpriteCodex::DrawTile3(field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx);
+			break;
+		case 4:
+			SpriteCodex::DrawTile4(field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx);
+			break;
+		case 5:
+			SpriteCodex::DrawTile5(field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx);
+			break;
+		case 6:
+			SpriteCodex::DrawTile6(field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx);
+			break;
+		case 7:
+			SpriteCodex::DrawTile7(field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx);
+			break;
+		case 8:
+			SpriteCodex::DrawTile8(field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx);
+			break;
+		}
 		break;
 	case State::Meme:
 		SpriteCodex::DrawTileMeme( field.offset + field.ToVei2(index) * SpriteCodex::tileSize, gfx );
@@ -61,6 +90,7 @@ void MemeField::Tile::ToggleFlag()
 
 void MemeField::Tile::NewMeme()
 {
+	assert( !hasMeme );
 	hasMeme = true;
 }
 
@@ -71,7 +101,7 @@ bool MemeField::Tile::HasMeme() const
 
 void MemeField::Tile::Reveal()
 {
-	if (hasMeme)
+	if ( hasMeme )
 	{
 		state = State::Meme;
 	}
@@ -79,6 +109,17 @@ void MemeField::Tile::Reveal()
 	{
 		state = State::Revealed;
 	}
+}
+
+int MemeField::Tile::GetProximity()
+{
+	return proximity;
+}
+
+void MemeField::Tile::IncProximity()
+{
+	assert( proximity >= 0 && proximity <= 8 );
+	proximity += 1;
 }
 
 
@@ -95,6 +136,21 @@ void MemeField::Draw( Graphics& gfx )
 	for ( int i = 0; i < width * height; i++ )
 	{
 		board[i].Draw( *this , i, gfx );
+	}
+}
+
+void MemeField::SpawnMeme( Vei2& gridPos )
+{
+	GetTile( gridPos ).NewMeme();
+	for ( int y = -1; y <= 1; y++ )
+	{
+		for ( int x = -1; x <= 1; x++ )
+		{
+			if ( !GetTile( gridPos + Vei2( x, y ) ).HasMeme() )
+			{
+				GetTile( gridPos + Vei2( x, y ) ).IncProximity();
+			}
+		}
 	}
 }
 

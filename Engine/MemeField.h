@@ -27,16 +27,20 @@ public:
 		void ToggleFlag();
 		bool HasMeme() const;
 		void Reveal();
+		int GetProximity();
+		void IncProximity();
 
 		// Variables
 	private:
 		State state = State::Hidden;
 		bool hasMeme = false;
+		int proximity = 0;
 	};
 // Functions
 public:
 	MemeField( int nMemes );
 	void Draw( Graphics& gfx );
+	void SpawnMeme( Vei2& gridPos );
 	Vei2& ToVei2(const int index) const;
 	const int ToIndex(const Vei2& gridPos) const;
 	Tile& GetTile(const Vei2& gridPos);
