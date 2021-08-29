@@ -27,7 +27,7 @@ public:
 		void ToggleFlag();
 		bool HasMeme() const;
 		void Reveal();
-		int GetProximity();
+		int GetProximity() const;
 		void IncProximity();
 
 		// Variables
@@ -45,7 +45,8 @@ public:
 	const int ToIndex(const Vei2& gridPos) const;
 	Tile& GetTile(const Vei2& gridPos);
 	const bool IsOnBoard( const Vei2& screenPos ) const;
-	Tile& TileAt(const Vei2& screenPos);
+	Tile& TileAt( const Vei2& screenPos );
+	Vei2& TileAtPos( const Vei2& screenPos ) const;
 
 // Variables
 public:

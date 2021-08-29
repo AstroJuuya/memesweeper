@@ -111,7 +111,7 @@ void MemeField::Tile::Reveal()
 	}
 }
 
-int MemeField::Tile::GetProximity()
+int MemeField::Tile::GetProximity() const
 {
 	return proximity;
 }
@@ -170,6 +170,15 @@ MemeField::Tile& MemeField::TileAt(const Vei2& screenPos)
 	{
 		const Vei2 relPos = screenPos - offset;
 		return GetTile( relPos / SpriteCodex::tileSize );
+	}
+}
+
+Vei2& MemeField::TileAtPos(const Vei2& screenPos) const
+{
+	if (IsOnBoard(screenPos))
+	{
+		const Vei2 relPos = screenPos - offset;
+		return relPos / SpriteCodex::tileSize;
 	}
 }
 
