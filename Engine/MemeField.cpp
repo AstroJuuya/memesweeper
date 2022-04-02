@@ -156,7 +156,7 @@ void MemeField::SpawnMeme( Vei2& gridPos )
 
 MemeField::Tile& MemeField::GetTile( const Vei2& gridPos )
 {
-	return board[ ToIndex( gridPos ) ];
+	if (
 }
 
 const bool MemeField::IsOnBoard(const Vei2& screenPos) const
