@@ -169,7 +169,16 @@ void MemeField::Reveal( const Vei2 gridPos )
 			{
 				if (
 					!GetTile(gridPos + Vei2(x, y)).HasMeme() &&
-					GetTile(gridPos + Vei2(x, y)).GetState() == Tile::State::Hidden
+					GetTile(gridPos + Vei2(x, y)).GetState() == Tile::State::Hidden &&
+					GetTile(gridPos + Vei2(x, y)).GetProximity() == 0
+					)
+				{
+					Reveal((gridPos + Vei2(x, y)));
+				}
+				else if (
+					!GetTile(gridPos + Vei2(x, y)).HasMeme() &&
+					GetTile(gridPos + Vei2(x, y)).GetState() == Tile::State::Hidden &&
+					GetTile(gridPos + Vei2(x, y)).GetProximity() > 0
 					)
 				{
 					GetTile(gridPos + Vei2(x, y)).RevealTile();
