@@ -48,7 +48,7 @@ private:
 	/*  User Variables              */
 	std::mt19937 rng;
 	MemeField mf;
-	static constexpr int nMemes = 20;
+	static constexpr int nMemes = 40;
 	bool mouseCooldown = false;
 	/********************************/
 };

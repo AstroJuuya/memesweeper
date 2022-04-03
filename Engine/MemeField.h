@@ -41,6 +41,7 @@ public:
 	MemeField( int nMemes );
 	void Draw( Graphics& gfx );
 	void SpawnMeme( Vei2& gridPos );
+	void Reveal( Vei2& gridPos );
 	Vei2& ToVei2(const int index) const;
 	const int ToIndex(const Vei2& gridPos) const;
 	Tile& GetTile(const Vei2& gridPos);

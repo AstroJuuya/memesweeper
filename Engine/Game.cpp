@@ -61,7 +61,7 @@ void Game::UpdateModel()
 		{
 			if ( mf.TileAt( mousePos ).GetState() != MemeField::Tile::State::Flag )
 			{
-				mf.TileAt( mousePos ).Reveal();
+				mf.Reveal( mf.TileAtPos( mousePos ) );
 			}
 		}
 		mouseCooldown = true;

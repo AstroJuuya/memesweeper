@@ -154,9 +154,48 @@ void MemeField::SpawnMeme( Vei2& gridPos )
 	}
 }
 
+void MemeField::Reveal( Vei2& gridPos )
+{
+	GetTile( gridPos ).Reveal();
+
+	if (GetTile(gridPos).GetProximity() == 0 && !GetTile(gridPos).HasMeme())
+	{
+		for (int y = -1; y <= 1; y++)
+		{
+			for (int x = -1; x <= 1; x++)
+			{
+				if (
+					!GetTile(gridPos + Vei2(x, y)).HasMeme() &&
+					GetTile(gridPos + Vei2(x, y)).GetState() == Tile::State::Hidden &&
+					GetTile(gridPos + Vei2(x, y)).GetProximity() == 0
+					)
+				{
+					Reveal((gridPos + Vei2(x, y)));
+				}
+				else if (
+					!GetTile(gridPos + Vei2(x, y)).HasMeme() &&
+					GetTile(gridPos + Vei2(x, y)).GetState() == Tile::State::Hidden &&
+					GetTile(gridPos + Vei2(x, y)).GetProximity() > 0
+					)
+				{
+					GetTile(gridPos + Vei2(x, y)).Reveal();
+				}
+			}
+		}
+	}
+}
+
 MemeField::Tile& MemeField::GetTile( const Vei2& gridPos )
 {
 	if (
+		gridPos.x	>=	0		&&
+		gridPos.x	<	width	&&
+		gridPos.y	>=	0		&&
+		gridPos.y	<	height
+		)
+	{
+		return board[ToIndex(gridPos)];
+	}
 }
 
 const bool MemeField::IsOnBoard(const Vei2& screenPos) const
