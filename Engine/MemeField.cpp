@@ -99,7 +99,7 @@ bool MemeField::Tile::HasMeme() const
 	return hasMeme;
 }
 
-void MemeField::Tile::Reveal()
+void MemeField::Tile::RevealTile()
 {
 	if ( hasMeme )
 	{
@@ -146,7 +146,10 @@ void MemeField::SpawnMeme( Vei2& gridPos )
 	{
 		for ( int x = -1; x <= 1; x++ )
 		{
-			if ( !GetTile( gridPos + Vei2( x, y ) ).HasMeme() )
+			if (
+					!GetTile( gridPos + Vei2( x, y ) ).HasMeme() && 
+					GetTile( gridPos + Vei2( x,y ) ).GetState() == Tile::State::Hidden
+				)
 			{
 				GetTile( gridPos + Vei2( x, y ) ).IncProximity();
 			}
@@ -154,9 +157,9 @@ void MemeField::SpawnMeme( Vei2& gridPos )
 	}
 }
 
-void MemeField::Reveal( Vei2& gridPos )
+void MemeField::Reveal( const Vei2 gridPos )
 {
-	GetTile( gridPos ).Reveal();
+	GetTile( gridPos ).RevealTile();
 
 	if (GetTile(gridPos).GetProximity() == 0 && !GetTile(gridPos).HasMeme())
 	{
@@ -166,19 +169,10 @@ void MemeField::Reveal( Vei2& gridPos )
 			{
 				if (
 					!GetTile(gridPos + Vei2(x, y)).HasMeme() &&
-					GetTile(gridPos + Vei2(x, y)).GetState() == Tile::State::Hidden &&
-					GetTile(gridPos + Vei2(x, y)).GetProximity() == 0
+					GetTile(gridPos + Vei2(x, y)).GetState() == Tile::State::Hidden
 					)
 				{
-					Reveal((gridPos + Vei2(x, y)));
-				}
-				else if (
-					!GetTile(gridPos + Vei2(x, y)).HasMeme() &&
-					GetTile(gridPos + Vei2(x, y)).GetState() == Tile::State::Hidden &&
-					GetTile(gridPos + Vei2(x, y)).GetProximity() > 0
-					)
-				{
-					GetTile(gridPos + Vei2(x, y)).Reveal();
+					GetTile(gridPos + Vei2(x, y)).RevealTile();
 				}
 			}
 		}

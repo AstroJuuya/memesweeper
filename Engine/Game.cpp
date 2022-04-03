@@ -36,7 +36,7 @@ Game::Game( MainWindow& wnd )
 		const Vei2 tile = Vei2(gridPos(rng), gridPos(rng));
 		if ( mf.GetTile( tile ).GetState() != MemeField::Tile::State::Revealed )
 		{
-			mf.GetTile( tile ).Reveal();
+			mf.GetTile( tile ).RevealTile();
 			rev--;
 		}
 	}
